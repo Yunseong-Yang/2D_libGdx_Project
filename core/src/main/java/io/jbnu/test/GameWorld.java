@@ -12,7 +12,7 @@ import java.util.List;
 
 // 게임 월드 클래스
 public class GameWorld {
-    public static final float WORLD_GRAVITY = -9.8f * 200;
+    public static final float WORLD_GRAVITY = -9.8f * 200; // 현재 월드의 중력 값
 
     private List<DefaultGameLevel> levelList; // 레벨 리스트
     private int currentLevelIndex; // 현재 레벨을 추적하기 위한 인덱스
@@ -34,19 +34,20 @@ public class GameWorld {
     private final float BOUNCE_SPEED = 1000f;
     private final float BOUNCE_LIFT = 500f;
 
-    private int coinCnt;
+    private int coinCnt; // 현재 레벨의 코인 획득 수
 
-    public boolean isAllLevelClear = false;
+    public boolean isAllLevelClear = false; // 모든 레벨 클리어 플래그
 
     public GameWorld(Texture playerTexture, Sound hurtSound, Sound coinSound, Sound iceSpikeHitSound, Sound enemyHitSound, Sound deadZoneSound, Sound nextLevelSound)
     {
+        // 리스트에 레벨을 추가하여 관리
         levelList = new ArrayList<>();
 
         levelList.add(new ForestGameLevel());
         levelList.add(new DesertGameLevel());
         levelList.add(new SnowyLandGameLevel());
 
-        currentLevelIndex = 2;
+        currentLevelIndex = 0;
         currentLevel = levelList.get(currentLevelIndex);
 
         player = new GameCharacter(playerTexture, 0, 500);

@@ -104,6 +104,7 @@ public class Main extends ApplicationAdapter {
         draw();
     }
 
+    // GameWorld와 mainCamera 위치 변경 로직을 담당
     private void logic()
     {
         if (gameWorld.isAllLevelClear) { currentState = GameState.CLEAR; }
@@ -114,6 +115,7 @@ public class Main extends ApplicationAdapter {
         mainCamera.position.set(Math.round(gameWorld.getPlayer().position.x+playerTexture.getWidth()/2f),360,0);
     }
 
+    // 텍스처 렌더링 담당
     private void draw() {
         /* Main 세팅 */
         mainCamera.update();
@@ -172,10 +174,10 @@ public class Main extends ApplicationAdapter {
             batch.end();
         }
     }
-
+    // 사용자 키 입력 이벤트를 담당
     private void input()
     {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) { // 각 GameState에 따라서 처리 로직 분리
             if (currentState == GameState.PAUSED)
             {
                 currentState = GameState.RUNNING;

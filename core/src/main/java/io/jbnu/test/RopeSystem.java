@@ -1,7 +1,6 @@
 package io.jbnu.test;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -65,50 +64,50 @@ public class RopeSystem implements Disposable {
 
     private void handleRopePhysics(GameCharacter player, float delta)
     {
-        // 중심 계산
+        // 중심 계산(1)
         Vector2 center = getPlayerCenter(player);
-        Vector2 playerToAnchor = center.cpy().sub(ropeAnchor);
-        float len = playerToAnchor.len();
+        Vector2 anchorToPlayer = center.cpy().sub(ropeAnchor);
+        float len = anchorToPlayer.len();
         if (len == 0f) return;
 
-        Vector2 ropeDir = playerToAnchor.cpy().nor();
+        // 방사 벡터 및 법선 벡터 계산(2)
+        Vector2 ropeDir = anchorToPlayer.cpy().nor();
         Vector2 tangentDir = new Vector2(-ropeDir.y, ropeDir.x);
 
-        // 중력 적용
+        // 중력 적용 및 좌/우 입력 가속(3)
         player.velocity.add(0, GameWorld.WORLD_GRAVITY * delta);
 
-        // 좌/우 입력 가속
         if (isBackButtonPressed)
             player.velocity.add(tangentDir.cpy().scl(-SWING_FORCE * delta));
         if (isFrontButtonPressed)
             player.velocity.add(tangentDir.cpy().scl(SWING_FORCE * delta));
 
-        // 위치 이동
+        // 위치 이동(4)
         player.position.add(player.velocity.x * delta, player.velocity.y * delta);
 
-        // 거리 보정
+        // 거리 보정(5)
         Vector2 newCenter = getPlayerCenter(player);
-        Vector2 newPlayerToAnchor = newCenter.cpy().sub(ropeAnchor);
-        float currentLen = newPlayerToAnchor.len();
+        Vector2 newAnchorToPlayer = newCenter.cpy().sub(ropeAnchor);
+        float currentLen = newAnchorToPlayer.len();
 
         if (currentLen > ropeLength) {
-            // 초과한 거리만큼만 밀어내기
+            // 초과한 거리만큼만 밀어내기(6)
             float correction = currentLen - ropeLength;
-            newPlayerToAnchor.nor();
-            player.position.sub(newPlayerToAnchor.scl(correction));
+            newAnchorToPlayer.nor();
+            player.position.sub(newAnchorToPlayer.scl(correction));
 
-            // 방사속도 제거
+            // 방사속도 제거(7)
             float radialVel = player.velocity.dot(ropeDir);
             player.velocity.sub(ropeDir.scl(radialVel));
 
-            // 멈춤 방지: 최소 속도 유지
+            // 멈춤 방지: 최소 속도 유지(8)
             if (player.velocity.len2() < 10f) {
                 // 방향 유지한 채 최소 관성 부여
                 player.velocity.add(tangentDir.scl(50f * delta));
             }
         }
 
-        // 감쇠
+        // 감쇠(9)
         player.velocity.scl(0.998f);
     }
 

@@ -61,7 +61,7 @@ public abstract class DefaultGameLevel implements Disposable {
 
     public void render(OrthographicCamera mainCamera, SpriteBatch batch) {
         float camX = mainCamera.position.x;
-
+        // 배경을 3개 이어붙이고, 메인 카메라의 위치에 따라서 1:1로 이동할 수 있도록 구현
         batch.draw(background, camX - Main.DEFAULT_SCREEN_WIDTH, 0, Main.DEFAULT_SCREEN_WIDTH, Main.DEFAULT_SCREEN_HEIGHT);
         batch.draw(background, camX, 0, Main.DEFAULT_SCREEN_WIDTH, Main.DEFAULT_SCREEN_HEIGHT);
         batch.draw(background, camX + Main.DEFAULT_SCREEN_WIDTH, 0, Main.DEFAULT_SCREEN_WIDTH, Main.DEFAULT_SCREEN_HEIGHT);
@@ -81,7 +81,7 @@ public abstract class DefaultGameLevel implements Disposable {
         for (IceSpikeSpawner iceSpikeSpawner : iceSpikeSpawners)
         {
             iceSpikeSpawner.render(batch);
-            /* 블록과 충돌하면 다시 재생 */
+            /* 블록 및 DeadZone 과 충돌하면 다시 재생 */
             for (Block block : blocks)
             {
                 if (iceSpikeSpawner.getIceSpike().getBound().overlaps(block.getBound()) || iceSpikeSpawner.getIceSpike().getBound().overlaps(deadZone))
@@ -104,11 +104,9 @@ public abstract class DefaultGameLevel implements Disposable {
     {
         enemies.add(new Enemy(lastX + paddingX, paddingY, limitMoveAmount, enemyTexture));
     }
-
     protected void loadCoin(int paddingX, int paddingY) {
         coins.add(new Coin(lastX + paddingX, paddingY, new Animation<>(0.1f, coinFrames)));
     }
-
     // 블록의 Edge 부분 구현
     protected void loadEdge(boolean canAttachRope, boolean textureFlag, Texture texture, int numberOfEdge, int padding) {
         float edgeX = padding;
@@ -117,7 +115,6 @@ public abstract class DefaultGameLevel implements Disposable {
             blocks.add(new Block(canAttachRope, textureFlag, edgeX, edgeY, texture));
         }
     }
-
     // 블록의 Top 부분 구현
     protected void loadTop(boolean canAttachRope, boolean textureFlag, Texture texture, int numberOfBlocks, int padding) {
         float startX = lastX + padding;
@@ -126,7 +123,6 @@ public abstract class DefaultGameLevel implements Disposable {
             blocks.add(new Block(canAttachRope, textureFlag, startX, startY, texture));
         }
     }
-
     // 블록의 윗 경계 세팅
     protected void loadTopBorder(boolean canAttachRope, boolean textureFlag, Texture texture, int numberOfBlocks, int padding) {
         float startX = padding;
@@ -136,7 +132,6 @@ public abstract class DefaultGameLevel implements Disposable {
             blocks.add(new Block(canAttachRope, textureFlag, startX, startY, texture));
         }
     }
-
     // Ground 블록 세팅
     protected void loadGround(boolean canAttachRope, boolean textureFlag, Texture texture, int numberOfBlocks, int padding) {
         float startX = lastX + padding;
